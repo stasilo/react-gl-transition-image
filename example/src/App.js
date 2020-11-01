@@ -17,8 +17,8 @@ const mask = '/img/mask.png';
 
 const GlFadeInImage = ({ src, textures = [], mask = null, transition, transitionAlpha = false }) => {
     const [ref, inView] = useInView({
-        rootMargin: '0px 0px 0px 0px',
-        threshold: 0.5,
+        // rootMargin: '0px 0px 0px 0px',
+        threshold: 0,
         triggerOnce: true
     });
 
@@ -124,6 +124,67 @@ const App = () => {
 
 
 
+            <GlFadeInImage
+                src={cat2}
+            />
+            <GlFadeInImage
+                src={cat3}
+                mask={mask}
+            />
+            <GlFadeInImage
+                src={cat2}
+                transition={glitchTransition}
+            />
+            <GlFadeInImage
+                src={cat2}
+                transition={polkaTransition}
+            />
+            <GlFadeInImage
+                src={cat2}
+                transition={noiseSwirlsTransition}
+            />
+
+
+            <GlFadeInImage
+                src={cat2}
+            />
+            <GlFadeInImage
+                src={cat3}
+                mask={mask}
+            />
+            <GlFadeInImage
+                src={cat2}
+                transition={glitchTransition}
+            />
+            <GlFadeInImage
+                src={cat2}
+                transition={polkaTransition}
+            />
+            <GlFadeInImage
+                src={cat2}
+                transition={noiseSwirlsTransition}
+            />
+
+
+            <GlFadeInImage
+                src={cat2}
+            />
+            <GlFadeInImage
+                src={cat3}
+                mask={mask}
+            />
+            <GlFadeInImage
+                src={cat2}
+                transition={glitchTransition}
+            />
+            <GlFadeInImage
+                src={cat2}
+                transition={polkaTransition}
+            />
+            <GlFadeInImage
+                src={cat2}
+                transition={noiseSwirlsTransition}
+            />
         </>
     );
 }

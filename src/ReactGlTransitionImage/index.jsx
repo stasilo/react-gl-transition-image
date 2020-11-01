@@ -43,19 +43,6 @@ const ReactGlTransitionImage = React.forwardRef((props, ref) => {
     const wrapDimensions = useResizeObserver({ ref: dimRef });
 
     React.useEffect(() => {
-        if (!canvasRef.current || progress >= 1) {
-            return;
-        }
-
-        let gl = canvasRef.current.getContext('webgl', {
-            alpha: true,
-            antialias: true,
-            stencil: false,
-            preserveDrawingBuffer: false
-        });
-
-        reglInstance.current = regl({ gl });
-
         (async () => {
             let mainImagePromise = new Promise((resolve, reject) => {
                 let image = new Image();
@@ -83,24 +70,35 @@ const ReactGlTransitionImage = React.forwardRef((props, ref) => {
                 ...texturePromises
             ]);
 
+            console.log('setting image data!');
+
             setImageData({
                 image: imageData,
                 textures: textureData,
             });
         })();
+    }, []);
 
-        // TODO: figure out why this fucks everything up :)
-        return () => {
-            if (reglInstance.current) {
-                reglInstance.current.destroy();
-            }
+    React.useEffect(() => {
+        if(reglInstance.current || !imageData || progress == 0 || progress >= 1) {
+            return;
         }
-    }, [wrapDimensions]);
+
+        let gl = canvasRef.current.getContext('webgl', {
+            alpha: true,
+            antialias: true,
+            stencil: false,
+            preserveDrawingBuffer: false
+        });
+
+        reglInstance.current = regl({ gl });
+
+    }, [imageData, progress])
+
 
     React.useEffect(() => {
         const regl = reglInstance.current;
-
-        if (!regl || !renderCalls || !progress || !canvasRef.current) {
+        if (!regl || !renderCalls || progress == 0) {
             return;
         }
 
@@ -117,7 +115,11 @@ const ReactGlTransitionImage = React.forwardRef((props, ref) => {
             ]
         });
 
-    }, [renderCalls, progress, wrapDimensions]);
+        if(progress >= 1) {
+            reglInstance.current.destroy();
+            reglInstance.current = null;
+        }
+    }, [reglInstance.current, renderCalls, progress, wrapDimensions]);
 
     React.useEffect(() => {
         const regl = reglInstance.current;
@@ -229,9 +231,10 @@ const ReactGlTransitionImage = React.forwardRef((props, ref) => {
             count: 3
         });
 
+        console.log('setting draw calls')
         setRenderCalls({ drawImage });
 
-    }, [imageData]);
+    }, [reglInstance.current, imageData]);
 
 
     const wrapperStyles = {

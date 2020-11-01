@@ -1,8 +1,11 @@
 body {
     margin-top: 90vh;
+    overflow: scroll; 
 }
 
 .FadeInImage {
+    position: relative;
+
     margin: 0 auto;
     margin-bottom: 30vh;
 
