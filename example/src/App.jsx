@@ -3,7 +3,9 @@ import React from 'react';
 import ReactGlTransitionImage, {
     glitchTransition,
     polkaTransition,
-    noiseSwirlsTransition
+    noiseSwirlsTransition,
+    blurTransition,
+    waterTransition,
 } from 'react-gl-transition-image';
 
 import { useInView } from 'react-intersection-observer';
@@ -22,12 +24,13 @@ const GlFadeInImage = ({ src, textures, mask, transition }) => {
             <Spring
                 config={{
                     tension: 180,
-                    friction: 35,
+                    // friction: 35,
+                    friction: 45,
                     clamp: true
                 }}
                 to={{
                     fadeProgress: inView ? 1 : 0,
-                    scale: inView ? 1 : 0.85
+                    scale: 1 //inView ? 1 : 0.85
                 }}
             >
                 {animProps =>
@@ -65,6 +68,18 @@ const App = () => {
                     <h2>Default transition</h2>
                     <GlFadeInImage
                         src={cat2Src}
+                    />
+
+                    <h2>Water</h2>
+                    <GlFadeInImage
+                        src={cat3Src}
+                        transition={waterTransition}
+                    />
+
+                    <h2>Blur</h2>
+                    <GlFadeInImage
+                        src={cat3Src}
+                        transition={blurTransition}
                     />
 
                     <h2>Image mask</h2>

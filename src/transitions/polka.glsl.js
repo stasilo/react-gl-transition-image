@@ -1,6 +1,7 @@
+// original author: bobylito
+// license: MIT
+
 export default `
-    // original author: bobylito
-    // license: MIT
     const float SQRT_2 = 1.414213562373;
 
     float dots = 20.0;

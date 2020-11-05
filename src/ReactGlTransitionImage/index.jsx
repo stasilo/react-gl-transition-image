@@ -32,6 +32,7 @@ const ReactGlTransitionImage = React.forwardRef((props, ref) => {
     const reglInstance = React.useRef(null);
     const canvasRef = React.useRef(null);
 
+    const [reglReady, setReglReady] = React.useState(false);
     const [renderCalls, setRenderCalls] = React.useState(null);
     const [imageData, setImageData] = React.useState({
         image: null,
@@ -84,7 +85,7 @@ const ReactGlTransitionImage = React.forwardRef((props, ref) => {
     // (otherwise, having many images, we'll hit the max amount of simultaneous gl contexts)
 
     React.useEffect(() => {
-        if (reglInstance.current || !imageData
+        if (reglReady || !imageData.image
             || progress === 0 || progress >= 1) {
             return;
         }
@@ -97,15 +98,17 @@ const ReactGlTransitionImage = React.forwardRef((props, ref) => {
         });
 
         reglInstance.current = _regl({ gl });
-    }, [imageData, progress]);
+        setReglReady(true);
+    }, [reglReady, imageData, progress]);
 
     // construct regl draw calls
 
     React.useEffect(() => {
-        const regl = reglInstance.current;
-        if (!regl || !imageData.image) {
+        if (!reglReady || !imageData.image) {
             return;
         }
+
+        const regl = reglInstance.current;
 
         const imageTexture = regl.texture({
             data: imageData.image,
@@ -230,15 +233,16 @@ const ReactGlTransitionImage = React.forwardRef((props, ref) => {
         });
 
         setRenderCalls({ drawImage });
-    }, [reglInstance.current, imageData, seed, transitionAlpha, transitionSrc]);
+    }, [reglReady, imageData, seed, transitionAlpha, transitionSrc]);
 
     // render
 
     React.useEffect(() => {
-        const regl = reglInstance.current;
-        if (!regl || !renderCalls || progress === 0) {
+        if (!reglReady || !renderCalls || progress === 0) {
             return;
         }
+
+        const regl = reglInstance.current;
 
         regl.clear({
             color: [0, 0, 0, 0],
@@ -256,8 +260,9 @@ const ReactGlTransitionImage = React.forwardRef((props, ref) => {
         if (regl && progress >= 1) {
             regl.destroy();
             reglInstance.current = null;
+            setReglReady(false);
         }
-    }, [reglInstance.current, renderCalls, progress, wrapDimensions]);
+    }, [reglReady, renderCalls, progress, wrapDimensions]);
 
     // styles
 
@@ -320,10 +325,10 @@ ReactGlTransitionImage.propTypes = {
     src: PropTypes.string.isRequired,
     progress: PropTypes.number.isRequired,
     className: PropTypes.string,
-    style: PropTypes.object,
+    style: PropTypes.objectOf(PropTypes.string),
     transition: PropTypes.string,
     transitionAlpha: PropTypes.bool,
-    textures: PropTypes.array,
+    textures: PropTypes.arrayOf(PropTypes.string),
     mask: PropTypes.string,
 };
 
