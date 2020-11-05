@@ -11,183 +11,89 @@ import { Spring } from 'react-spring/renderprops';
 
 import './index.css';
 
-const cat2 = '/img/cat2.png';
-const cat3 = '/img/cat3.jpg';
-const mask = '/img/mask.png';
-
-const GlFadeInImage = ({ src, textures = [], mask = null, transition, transitionAlpha = false }) => {
+const GlFadeInImage = ({ src, textures, mask, transition }) => {
     const [ref, inView] = useInView({
-        // rootMargin: '0px 0px 0px 0px',
         threshold: 0,
         triggerOnce: true
     });
 
-    const mapRange = (inMin, inMax, outMin, outMax, v) =>
-        (v - inMin) * (outMax - outMin) / (inMax - inMin) + outMin;
-
     return (
-        <Spring
-            to={{ progress: inView ? 1 : 0 }}
+        <div className="image">
+            <Spring
+                config={{
+                    tension: 180,
+                    friction: 35,
+                    clamp: true
+                }}
+                to={{
+                    fadeProgress: inView ? 1 : 0,
+                    scale: inView ? 1 : 0.85
+                }}
+            >
+                {animProps =>
+                    <ReactGlTransitionImage
+                        ref={ref}
+                        src={src}
 
-            config={{
-                tension: 180,
-                friction: 35,
-                clamp: true
-            }}
-        >
-            {animProps =>
-                <ReactGlTransitionImage
-                    className="FadeInImage"
-                    ref={ref}
-                    src={src}
+                        mask={mask}
+                        textures={textures}
+                        transition={transition}
 
-                    mask={mask}
-                    textures={textures}
-
-                    transition={transition}
-                    transitionAlpha={transitionAlpha}
-
-                    progress={animProps.progress}
-                    style={{
-                        transform: `scale(${mapRange(0, 1, 0.85, 1, animProps.progress)})`,
-                    }}
-                />
-            }
-        </Spring>
+                        progress={animProps.fadeProgress}
+                        style={{
+                            transform: `scale(${animProps.scale})`
+                        }}
+                    />
+                }
+            </Spring>
+        </div>
     );
 };
 
 const App = () => {
+    const cat2Src = '/img/cat2.png';
+    const cat3Src = '/img/cat3.jpg';
+    const maskSrc = '/img/mask.png';
+
     return (
         <>
-            <GlFadeInImage
-                src={cat2}
-            />
-            <GlFadeInImage
-                src={cat3}
-                mask={mask}
-            />
-            <GlFadeInImage
-                src={cat2}
-                transition={glitchTransition}
-            />
-            <GlFadeInImage
-                src={cat2}
-                transition={polkaTransition}
-            />
-            <GlFadeInImage
-                src={cat2}
-                transition={noiseSwirlsTransition}
-            />
+            {[...Array(5)].map((_, i) =>
+                <div
+                    className="wrapper"
+                    key={i}
+                >
+                    <h2>Default transition</h2>
+                    <GlFadeInImage
+                        src={cat2Src}
+                    />
 
+                    <h2>Image mask</h2>
+                    <GlFadeInImage
+                        src={cat3Src}
+                        mask={maskSrc}
+                    />
 
-            <GlFadeInImage
-                src={cat2}
-            />
-            <GlFadeInImage
-                src={cat3}
-                mask={mask}
-            />
-            <GlFadeInImage
-                src={cat2}
-                transition={glitchTransition}
-            />
-            <GlFadeInImage
-                src={cat2}
-                transition={polkaTransition}
-            />
-            <GlFadeInImage
-                src={cat2}
-                transition={noiseSwirlsTransition}
-            />
+                    <h2>Glitch</h2>
+                    <GlFadeInImage
+                        src={cat2Src}
+                        transition={glitchTransition}
+                    />
 
+                    <h2>Polka</h2>
+                    <GlFadeInImage
+                        src={cat3Src}
+                        transition={polkaTransition}
+                    />
 
-            <GlFadeInImage
-                src={cat2}
-            />
-            <GlFadeInImage
-                src={cat3}
-                mask={mask}
-            />
-            <GlFadeInImage
-                src={cat2}
-                transition={glitchTransition}
-            />
-            <GlFadeInImage
-                src={cat2}
-                transition={polkaTransition}
-            />
-            <GlFadeInImage
-                src={cat2}
-                transition={noiseSwirlsTransition}
-            />
-
-
-
-            <GlFadeInImage
-                src={cat2}
-            />
-            <GlFadeInImage
-                src={cat3}
-                mask={mask}
-            />
-            <GlFadeInImage
-                src={cat2}
-                transition={glitchTransition}
-            />
-            <GlFadeInImage
-                src={cat2}
-                transition={polkaTransition}
-            />
-            <GlFadeInImage
-                src={cat2}
-                transition={noiseSwirlsTransition}
-            />
-
-
-            <GlFadeInImage
-                src={cat2}
-            />
-            <GlFadeInImage
-                src={cat3}
-                mask={mask}
-            />
-            <GlFadeInImage
-                src={cat2}
-                transition={glitchTransition}
-            />
-            <GlFadeInImage
-                src={cat2}
-                transition={polkaTransition}
-            />
-            <GlFadeInImage
-                src={cat2}
-                transition={noiseSwirlsTransition}
-            />
-
-
-            <GlFadeInImage
-                src={cat2}
-            />
-            <GlFadeInImage
-                src={cat3}
-                mask={mask}
-            />
-            <GlFadeInImage
-                src={cat2}
-                transition={glitchTransition}
-            />
-            <GlFadeInImage
-                src={cat2}
-                transition={polkaTransition}
-            />
-            <GlFadeInImage
-                src={cat2}
-                transition={noiseSwirlsTransition}
-            />
+                    <h2>Noise swirl</h2>
+                    <GlFadeInImage
+                        src={cat2Src}
+                        transition={noiseSwirlsTransition}
+                    />
+                </div>
+            )}
         </>
     );
 }
-
 
 export default App;

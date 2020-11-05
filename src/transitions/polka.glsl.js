@@ -1,9 +1,7 @@
 export default `
-    // author: bobylito
+    // original author: bobylito
     // license: MIT
     const float SQRT_2 = 1.414213562373;
-    // uniform float dots;// = 20.0;
-    // uniform vec2 center;// = vec2(0, 0);
 
     float dots = 20.0;
     vec2 center = vec2(0, 0);

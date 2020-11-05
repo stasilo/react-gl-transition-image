@@ -1,11 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import regl from 'regl';
+import _regl from 'regl';
 import useResizeObserver from 'use-resize-observer';
 
-import blobbyTransition from '../transitions/blobby.glsl.js';
-import maskTransition from '../transitions/mask.glsl.js';
+import blobbyTransition from '../transitions/blobby.glsl';
+import maskTransition from '../transitions/mask.glsl';
 
 const ReactGlTransitionImage = React.forwardRef((props, ref) => {
     const {
@@ -23,121 +23,112 @@ const ReactGlTransitionImage = React.forwardRef((props, ref) => {
         ? maskTransition
         : transition;
 
-    const textureUrls = mask
-        ? [...textures, mask]
-        : textures;
+    const textureUrls = React.useMemo(() => (
+        mask
+            ? [...textures, mask]
+            : textures
+    ), [mask, textures]);
 
-    const seed = React.useMemo(() => Math.random() * 1000, []);
-
-    let reglInstance = React.useRef(null);
+    const reglInstance = React.useRef(null);
     const canvasRef = React.useRef(null);
 
-    let [imageData, setImageData] = React.useState({
+    const [renderCalls, setRenderCalls] = React.useState(null);
+    const [imageData, setImageData] = React.useState({
         image: null,
-        textures: []
+        textures: [],
     });
-
-    let [renderCalls, setRenderCalls] = React.useState(null);
 
     const dimRef = React.useRef(null);
     const wrapDimensions = useResizeObserver({ ref: dimRef });
 
+    const seed = React.useMemo(() => Math.random() * 1000, []);
+
+    // load image & optional texture data
+
     React.useEffect(() => {
         (async () => {
-            let mainImagePromise = new Promise((resolve, reject) => {
-                let image = new Image();
+            const mainImagePromise = new Promise((resolve) => {
+                const image = new Image();
                 image.onload = () => {
                     resolve(image);
-                }
+                };
+
                 image.src = src;
             });
 
             let texturePromises = [];
-            if(textureUrls.length > 0) {
-                texturePromises = textureUrls.map(texture => {
-                    return new Promise((resolve, reject) => {
-                        let textureImage = new Image();
-                        textureImage.onload = () => {
-                            resolve(textureImage);
-                        }
-                        textureImage.src = texture;
-                    })
-                });
+            if (textureUrls.length > 0) {
+                texturePromises = textureUrls.map((texture) => new Promise((resolve) => {
+                    const textureImage = new Image();
+                    textureImage.onload = () => {
+                        resolve(textureImage);
+                    };
+
+                    textureImage.src = texture;
+                }));
             }
 
-            const [imageData, ...textureData] = await Promise.all([
+            const [image, ...textureData] = await Promise.all([
                 mainImagePromise,
-                ...texturePromises
+                ...texturePromises,
             ]);
 
-            console.log('setting image data!');
-
             setImageData({
-                image: imageData,
+                image,
                 textures: textureData,
             });
         })();
-    }, []);
+    }, [src, textureUrls]);
+
+    // construct regl instance (& webgl context) once progress > 0
+    // (otherwise, having many images, we'll hit the max amount of simultaneous gl contexts)
 
     React.useEffect(() => {
-        if(reglInstance.current || !imageData || progress == 0 || progress >= 1) {
+        if (reglInstance.current || !imageData
+            || progress === 0 || progress >= 1) {
             return;
         }
 
-        let gl = canvasRef.current.getContext('webgl', {
+        const gl = canvasRef.current.getContext('webgl', {
             alpha: true,
             antialias: true,
             stencil: false,
-            preserveDrawingBuffer: false
+            preserveDrawingBuffer: false,
         });
 
-        reglInstance.current = regl({ gl });
+        reglInstance.current = _regl({ gl });
+    }, [imageData, progress]);
 
-    }, [imageData, progress])
-
+    // construct regl draw calls
 
     React.useEffect(() => {
         const regl = reglInstance.current;
-        if (!regl || !renderCalls || progress == 0) {
+        if (!regl || !imageData.image) {
             return;
         }
 
-        regl.clear({
-            depth: 1,
-            color: [0, 0, 0, 0]
-        })
-
-        renderCalls.drawImage({
-            progress,
-            resolution: [
-                wrapDimensions.width,
-                wrapDimensions.height
-            ]
+        const imageTexture = regl.texture({
+            data: imageData.image,
+            flipY: true,
         });
 
-        if(progress >= 1) {
-            reglInstance.current.destroy();
-            reglInstance.current = null;
-        }
-    }, [reglInstance.current, renderCalls, progress, wrapDimensions]);
+        const formattedTextures = imageData.textures
+            .reduce((texObj, texture, i) => ({
+                ...texObj,
+                [`textures[${i}]`]: regl.texture({
+                    data: texture,
+                    flipY: true,
+                }),
+            }), {});
 
-    React.useEffect(() => {
-        const regl = reglInstance.current;
-        if(!regl || !imageData.image) {
-            return;
-        }
-
-        const imageTexture = regl.texture({ data: imageData.image, flipY: true });
-
-        const textures = imageData.textures.reduce((texObj, texture, i) => ({
-            ...texObj,
-            [`textures[${i}]`]: regl.texture({ data: texture, flipY: true })
-        }), {});
-
-        const textureResolutions = imageData.textures.reduce((resObj, texture, i) => ({
-            ...resObj,
-            [`textureResolutions[${i}]`]: [texture.width, texture.height]
-        }), {});
+        const textureResolutions = imageData.textures
+            .reduce((resObj, texture, i) => ({
+                ...resObj,
+                [`textureResolutions[${i}]`]: [
+                    texture.width,
+                    texture.height,
+                ],
+            }), {});
 
         const drawImage = regl({
             frag: `
@@ -151,20 +142,15 @@ const ReactGlTransitionImage = React.forwardRef((props, ref) => {
                 ${imageData.textures.length > 0 ? `
                     uniform sampler2D textures[${imageData.textures.length}];
                     uniform vec2 textureResolutions[${imageData.textures.length}];
-                `:''}
+                ` : ''}
 
                 varying vec2 uv;
 
-                vec4 getFromColor(vec2 st) {
-                    return vec4(vec3(0.), 1.);
-                }
-
                 // draw image using "background-size: cover"-ish fill
                 // https://gist.github.com/statico/df64c5d167362ecf7b34fca0b1459a44
-
-                vec4 getToColor(vec2 uv) {
+                vec2 convertToCoverUvs(vec2 uv, vec2 imageRes) {
                     vec2 s = resolution; // screen
-                    vec2 i = imageResolution; // image
+                    vec2 i = imageRes; // image
 
                     float rs = s.x / s.y;
                     float ri = i.x / i.y;
@@ -179,6 +165,15 @@ const ReactGlTransitionImage = React.forwardRef((props, ref) => {
 
                     vec2 uw = uv * s / new + offset;
 
+                    return uw;
+                }
+
+                vec4 getFromColor(vec2 st) {
+                    return vec4(vec3(0.), 1.);
+                }
+
+                vec4 getToColor(vec2 uv) {
+                    vec2 uw = convertToCoverUvs(uv, imageResolution);
                     return texture2D(image, uw);
                 }
 
@@ -205,17 +200,20 @@ const ReactGlTransitionImage = React.forwardRef((props, ref) => {
                 position: [
                     -2, 0,
                     0, -2,
-                    2, 2
-                ]
+                    2, 2,
+                ],
             },
             uniforms: {
                 progress: regl.prop('progress'),
                 resolution: regl.prop('resolution'),
-                seed: seed,
+                seed,
                 image: imageTexture,
-                imageResolution: [imageData.image.width, imageData.image.height],
+                imageResolution: [
+                    imageData.image.width,
+                    imageData.image.height,
+                ],
                 ...textureResolutions,
-                ...textures
+                ...formattedTextures,
             },
             // https://stackoverflow.com/questions/45066688/blending-anti-aliased-circles-with-regl/45071910#45071910
             blend: {
@@ -228,18 +226,46 @@ const ReactGlTransitionImage = React.forwardRef((props, ref) => {
                 },
             },
             depth: { enable: false },
-            count: 3
+            count: 3,
         });
 
-        console.log('setting draw calls')
         setRenderCalls({ drawImage });
+    }, [reglInstance.current, imageData, seed, transitionAlpha, transitionSrc]);
 
-    }, [reglInstance.current, imageData]);
+    // render
 
+    React.useEffect(() => {
+        const regl = reglInstance.current;
+        if (!regl || !renderCalls || progress === 0) {
+            return;
+        }
+
+        regl.clear({
+            color: [0, 0, 0, 0],
+            depth: 1,
+        });
+
+        renderCalls.drawImage({
+            progress,
+            resolution: [
+                wrapDimensions.width,
+                wrapDimensions.height,
+            ],
+        });
+
+        if (regl && progress >= 1) {
+            regl.destroy();
+            reglInstance.current = null;
+        }
+    }, [reglInstance.current, renderCalls, progress, wrapDimensions]);
+
+    // styles
 
     const wrapperStyles = {
         position: 'relative',
-        ...style
+        width: '100%',
+        height: '100%',
+        ...style,
     };
 
     const canvasWrapperStyles = {
@@ -269,7 +295,7 @@ const ReactGlTransitionImage = React.forwardRef((props, ref) => {
             style={wrapperStyles}
             ref={dimRef}
         >
-            {progress <= 1 &&
+            {progress <= 1 && (
                 <div
                     ref={ref}
                     style={canvasWrapperStyles}
@@ -280,12 +306,12 @@ const ReactGlTransitionImage = React.forwardRef((props, ref) => {
                         height={wrapDimensions.height}
                     />
                 </div>
-            }
-            {progress >= 1 &&
+            )}
+            {progress >= 1 && (
                 <div
                     style={regularBgStyles}
                 />
-            }
+            )}
         </div>
     );
 });
@@ -302,6 +328,8 @@ ReactGlTransitionImage.propTypes = {
 };
 
 ReactGlTransitionImage.defaultProps = {
+    className: '',
+    style: {},
     transition: blobbyTransition,
     transitionAlpha: false,
     textures: [],
