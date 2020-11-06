@@ -24,13 +24,13 @@ const GlFadeInImage = ({ src, textures, mask, transition }) => {
             <Spring
                 config={{
                     tension: 180,
-                    // friction: 35,
                     friction: 45,
                     clamp: true
                 }}
                 to={{
                     fadeProgress: inView ? 1 : 0,
-                    scale: 1 //inView ? 1 : 0.85
+                    scale: inView ? 1 : 0.9,
+                    yPos: inView ? 0 : 80
                 }}
             >
                 {animProps =>
@@ -44,7 +44,7 @@ const GlFadeInImage = ({ src, textures, mask, transition }) => {
 
                         progress={animProps.fadeProgress}
                         style={{
-                            transform: `scale(${animProps.scale})`
+                            transform: `scale(${animProps.scale}) translate3d(0, ${animProps.yPos}px, 0)`
                         }}
                     />
                 }
