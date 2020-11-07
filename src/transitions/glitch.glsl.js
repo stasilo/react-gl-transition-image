@@ -1,5 +1,6 @@
 // author: Gunnar Roth
 // based on work from natewave
+// adapted by Jakob Stasilowicz
 // license: MIT
 
 export default `
@@ -14,9 +15,9 @@ export default `
         vec2 blue = p + dist * .5;
 
         return vec4(
-            mix(getFromColor(red), getToColor(red), progress).r,
-            mix(getFromColor(green), getToColor(green), progress).g,
-            mix(getFromColor(blue), getToColor(blue), progress).b,
+            getToColor(red).r,
+            getToColor(green).g,
+            getToColor(blue).b,
             1.0
         );
     }

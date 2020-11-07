@@ -172,7 +172,7 @@ const ReactGlTransitionImage = React.forwardRef((props, ref) => {
                 }
 
                 vec4 getFromColor(vec2 st) {
-                    return vec4(vec3(0.), 1.);
+                    return vec4(0.);
                 }
 
                 vec4 getToColor(vec2 uv) {

@@ -3,6 +3,7 @@
 body {
     background-color: #C06A5B;
     font-family: 'Inter', sans-serif;
+    color: white;
 }
 
 .wrapper {
@@ -12,7 +13,7 @@ body {
 }
 
 .wrapper h2 {
-    font-size: 32px;
+    font-size: 38px;
     margin-bottom: 40px;
     text-transform: uppercase;
 }

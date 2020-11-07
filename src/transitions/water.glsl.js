@@ -17,5 +17,4 @@ export default `
             return getToColor( p + (offset * (1. - 1./progress)) );
         }
     }
-
 `;
