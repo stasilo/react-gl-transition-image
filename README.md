@@ -15,7 +15,7 @@ npm install --save react-gl-transition-image
 ```
 
 ## Live demo
-See a live demo with all transitions [here](https://stasilo.github.io/react-gl-transition-image/example/build/).
+See a live demo with all transitions [here](https://stasilo.github.io/react-gl-transition-image/example/build/). The code is available in the `example/` directory of this repository.
 
 ## Usage
 `<ReactGlTransitionImage/>` is pretty bare bones by design and does not handle the actual animation or in view detection to offer greater flexibility. In its most simple form it accepts a image `src` prop and a `progress` prop, indicating the normalized progress of the animation (a value between `0`and `1`).
@@ -90,7 +90,7 @@ const GlFadeInImage = ({ src }) => {
 | style      | CSS inline style object for the outermost wrapper div (useful for animating CSS properties concurrently with the GLSL transition (see live demo))                                               |          |                         |
 
 ## Transitions
-The following transitions are currently available.
+The following transitions are currently available:
 
 - blobbyTransition (default)
 - glitchTransition

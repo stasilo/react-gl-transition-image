@@ -60,7 +60,7 @@ const GlFadeInImage = ({ src, textures, mask, transition }) => {
 const App = () => {
     return (
         <>
-            {[...Array(5)].map((_, i) =>
+            {[...Array(2)].map((_, i) =>
                 <div
                     className="wrapper"
                     key={i}
