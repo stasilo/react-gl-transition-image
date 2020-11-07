@@ -9,6 +9,9 @@ build
 dist
 .rpt2_cache
 
+# exempt example build
+!example/build
+
 # misc
 .DS_Store
 .env

@@ -156,18 +156,18 @@ And then using it in React:
 import ReactGlTransitionImage from 'react-gl-transition-image';
 
 const transitionSrc = `
-	vec4 transition(vec2 uv) {
-		vec4 col = vec4(0.);
+    vec4 transition(vec2 uv) {
+        vec4 col = vec4(0.);
 
-		float xOffset = (1. - (1./progress));
-		vec2 uw = uv - vec2(xOffset, 0.);
+        float xOffset = (1. - (1./progress));
+        vec2 uw = uv - vec2(xOffset, 0.);
 
-		if(uw.x < 1.) {
-			col = getToColor(uw);
-		}
+        if(uw.x < 1.) {
+            col = getToColor(uw);
+        }
 
-		return col;
-	}
+        return col;
+    }
 `;
 
 ...

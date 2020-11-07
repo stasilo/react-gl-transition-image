@@ -1,6 +1,6 @@
 {
   "name": "react-gl-transition-image",
-  "version": "1.0.0",
+  "version": "0.0.2",
   "description": "Fade in image effect using webgl glsl transitions",
   "author": "stasilo",
   "license": "MIT",
