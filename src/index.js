@@ -1,6 +1,19 @@
-import React from 'react'
-import styles from './styles.module.css'
+import ReactGlTransitionImage from './ReactGlTransitionImage';
 
-export const ExampleComponent = ({ text }) => {
-  return <div className={styles.test}>Example Component: {text}</div>
-}
+import blobbyTransition from './transitions/blobby.glsl';
+import glitchTransition from './transitions/glitch.glsl';
+import polkaTransition from './transitions/polka.glsl';
+import noiseSwirlsTransition from './transitions/noiseSwirls.glsl';
+import blurTransition from './transitions/blur.glsl';
+import waterTransition from './transitions/water.glsl';
+
+export {
+    blobbyTransition,
+    glitchTransition,
+    polkaTransition,
+    noiseSwirlsTransition,
+    blurTransition,
+    waterTransition,
+};
+
+export default ReactGlTransitionImage;
