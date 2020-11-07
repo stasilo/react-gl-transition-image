@@ -2,6 +2,9 @@
 <h1 align='center'>
 	react-gl-transition-image  🎨
 </h1>
+<p align='center'>
+    <img src="https://github.com/stasilo/react-gl-transition-image/raw/master/assets/transition.gif"/>
+</div>
 
 Lazy load & transition your React images with some WebGL glsl niceness 🎉. Easy to use, offers 7 different transitions out the box and gives you the ability to easily port any transition from https://gl-transitions.com/!
 
@@ -84,7 +87,7 @@ const GlFadeInImage = ({ src }) => {
 | mask       | Mask image url. If this props is supplied, the image will be used as a mask and the transition will be set (and overridden) accordingly                                                                          | no       |                         |
 | textures   | Array of image urls to be loaded as textures in the transition shader. `textures[0]` will be available as `sampler2D textures[0] in the shader with `vec2 textureResolutions[0]` containing the image resolution. | no       |                         |
 | className  | CSS class name for the outermost wrapper div                                                                                                                                                                     | no       |                         |
-| `style`      | CSS inline style object for the outermost wrapper div (useful for animating CSS properties concurrently with the GLSL transition (see live demo))                                               |          |                         |
+| style      | CSS inline style object for the outermost wrapper div (useful for animating CSS properties concurrently with the GLSL transition (see live demo))                                               |          |                         |
 
 ## Transitions
 The following transitions are currently available.
