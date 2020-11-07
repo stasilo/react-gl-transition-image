@@ -13,6 +13,10 @@ import { Spring } from 'react-spring/renderprops';
 
 import './index.css';
 
+import cat2Src from './assets/img/cat2.png';
+import cat3Src from './assets/img/cat3.jpg';
+import maskSrc from './assets/img/mask.png';
+
 const GlFadeInImage = ({ src, textures, mask, transition }) => {
     const [ref, inView] = useInView({
         threshold: 0,
@@ -54,10 +58,6 @@ const GlFadeInImage = ({ src, textures, mask, transition }) => {
 };
 
 const App = () => {
-    const cat2Src = '/img/cat2.png';
-    const cat3Src = '/img/cat3.jpg';
-    const maskSrc = '/img/mask.png';
-
     return (
         <>
             {[...Array(5)].map((_, i) =>
