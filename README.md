@@ -165,7 +165,7 @@ const transitionSrc = `
         float xOffset = (1. - (1./progress));
         vec2 uw = uv - vec2(xOffset, 0.);
 
-        if(uw.x < 1.) {
+        if(uw.x <= 1.) {
             col = getToColor(uw);
         }
 
