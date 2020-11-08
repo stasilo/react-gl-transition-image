@@ -55,24 +55,22 @@ const GlFadeInImage = ({ src }) => {
     });
 
     return (
-        <>
-            <Spring
-                config={{
-                    tension: 180,
-                    friction: 45,
-                    clamp: true
-                }}
-                to={{ progress: inView ? 1 : 0 }}
-            >
-                {animProps =>
-                    <ReactGlTransitionImage
-                        ref={ref}
-                        src={src}
-                        progress={animProps.progress}
-                    />
-                }
-            </Spring>
-        </>
+        <Spring
+            config={{
+                tension: 180,
+                friction: 45,
+                clamp: true
+            }}
+            to={{ progress: inView ? 1 : 0 }}
+        >
+            {animProps =>
+                <ReactGlTransitionImage
+                    ref={ref}
+                    src={src}
+                    progress={animProps.progress}
+                />
+            }
+        </Spring>
     );
 };
 ```
@@ -84,7 +82,7 @@ const GlFadeInImage = ({ src }) => {
 | src        | Image url                                                                                                                                                                                                        | yes      |                         |
 | progress   | GLSL transition source                                                                                                                                                                                           | yes      |                         |
 | transition | GLSL source for the transition effect                                                                                                                                                                            | no       | Blobby noise transition |
-| mask       | Mask image url. If this props is supplied, the image will be used as a mask and the transition will be set (and overridden) accordingly                                                                          | no       |                         |
+| mask       | Mask image url. If this prop is supplied, the image will be used as a mask and the transition will be set (and overridden) accordingly                                                                          | no       |                         |
 | textures   | Array of image urls to be loaded as textures in the transition shader. `textures[0]` will be available as `sampler2D textures[0] in the shader with `vec2 textureResolutions[0]` containing the image resolution. | no       |                         |
 | className  | CSS class name for the outermost wrapper div                                                                                                                                                                     | no       |                         |
 | style      | CSS inline style object for the outermost wrapper div (useful for animating CSS properties concurrently with the GLSL transition (see live demo))                                               |          |                         |
@@ -124,10 +122,10 @@ import ReactGlTransitionImage, {
 
 ```glsl
 // the current progress is available in the progress uniform declared as below.
-// note: don't declare manually in your source, it is declared for you.
+// note: don't declare it manually in your source, it is declared for you.
 // uniform float progress;
 
-// uv argument will contain the current raw normalized pixel coords
+// the uv argument will contain the current raw normalized pixel coords
 vec4 transition (vec2 uv) {
     // your transition code
 }
@@ -142,16 +140,16 @@ vec4 getToColor(vec2 uv);
 So, to slide in an image from the left (note that you probably shouldn't be using `react-gl-transition-image`for such a non-fancy effect), you'd write the transition as:
 ```glsl
 vec4 transition(vec2 uv) {
-	vec4 col = vec4(0.);
+    vec4 col = vec4(0.);
 
-	float xOffset = (1. - (1./progress));
-	vec2 uw = uv - vec2(xOffset, 0.);
+    float xOffset = (1. - (1./progress));
+    vec2 uw = uv - vec2(xOffset, 0.);
 
-	if(uw.x < 1.) {
-		col = getToColor(uw);
-	}
+    if(uw.x <= 1.) {
+        col = getToColor(uw);
+    }
 
-	return col;
+    return col;
 }
 ```
 
@@ -191,7 +189,7 @@ Most transitions can be used without modification, since the API is the same and
 
 ```glsl
 vec4 getFromColor(vec2 st) {
-	return vec4(0.);
+    return vec4(0.);
 }
 ```
 
@@ -207,15 +205,15 @@ uniform float amplitude; // = 30
 uniform float speed; // = 30
 
 vec4 transition(vec2 p) {
-	vec2 dir = p - vec2(.5);
-	float dist = length(dir);
+    vec2 dir = p - vec2(.5);
+    float dist = length(dir);
 
-	if (dist > progress) {
-		return mix(getFromColor( p), getToColor( p), progress);
-	} else {
-		vec2 offset = dir * sin(dist * amplitude - progress * speed);
-		return mix(getFromColor( p + offset), getToColor( p), progress);
-	}
+    if (dist > progress) {
+        return mix(getFromColor( p), getToColor( p), progress);
+    } else {
+        vec2 offset = dir * sin(dist * amplitude - progress * speed);
+        return mix(getFromColor( p + offset), getToColor( p), progress);
+    }
 }
 ```
 
