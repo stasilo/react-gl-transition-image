@@ -12,6 +12,7 @@ const ReactGlTransitionImage = React.forwardRef((props, ref) => {
         className,
         src,
         progress,
+        onAssetsLoaded,
         style,
         transition,
         transitionAlpha,
@@ -78,8 +79,10 @@ const ReactGlTransitionImage = React.forwardRef((props, ref) => {
                 image,
                 textures: textureData,
             });
+
+            onAssetsLoaded();
         })();
-    }, [src, textureUrls]);
+    }, [src, textureUrls, onAssetsLoaded]);
 
     // construct regl instance (& webgl context) once progress > 0
     // (otherwise, having many images, we'll hit the max amount of simultaneous gl contexts)
@@ -324,6 +327,7 @@ const ReactGlTransitionImage = React.forwardRef((props, ref) => {
 ReactGlTransitionImage.propTypes = {
     src: PropTypes.string.isRequired,
     progress: PropTypes.number.isRequired,
+    onAssetsLoaded: PropTypes.func,
     className: PropTypes.string,
     style: PropTypes.objectOf(PropTypes.string),
     transition: PropTypes.string,
@@ -335,6 +339,7 @@ ReactGlTransitionImage.propTypes = {
 ReactGlTransitionImage.defaultProps = {
     className: '',
     style: {},
+    onAssetsLoaded: () => {},
     transition: blobbyTransition,
     transitionAlpha: false,
     textures: [],
