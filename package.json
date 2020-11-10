@@ -1,6 +1,6 @@
 {
   "name": "react-gl-transition-image",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "Lazy load & transition in your React images with some WebGL glsl niceness 🎉",
   "author": "stasilo",
   "license": "MIT",
