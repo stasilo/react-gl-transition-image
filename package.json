@@ -1,9 +1,10 @@
 {
   "name": "react-gl-transition-image",
-  "version": "0.0.6",
-  "description": "Fade in image effect using webgl glsl transitions",
+  "version": "0.0.7",
+  "description": "Lazy load & transition in your React images with some WebGL glsl niceness 🎉",
   "author": "stasilo",
   "license": "MIT",
+  "keywords": ["react", "webgl", "glsl", "transition", "animation", "gl-transitions", "lazy-load"], 
   "repository": "stasilo/react-gl-transition-image",
   "main": "dist/index.js",
   "module": "dist/index.modern.js",

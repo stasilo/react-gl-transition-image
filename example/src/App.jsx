@@ -23,6 +23,11 @@ const GlFadeInImage = ({ src, textures, mask, transition }) => {
         triggerOnce: true
     });
 
+    const [assetsLoaded, setAssetsLoaded] = React.useState(false);
+    const onAssetsLoaded = React.useCallback(() => setAssetsLoaded(true), [setAssetsLoaded]);
+
+    const active = inView && assetsLoaded;
+
     return (
         <div className="image">
             <Spring
@@ -32,15 +37,16 @@ const GlFadeInImage = ({ src, textures, mask, transition }) => {
                     clamp: true
                 }}
                 to={{
-                    fadeProgress: inView ? 1 : 0,
-                    scale: inView ? 1 : 0.9,
-                    yPos: inView ? 0 : 80
+                    fadeProgress: active ? 1 : 0,
+                    scale: active ? 1 : 0.9,
+                    yPos: active ? 0 : 80
                 }}
             >
                 {animProps =>
                     <ReactGlTransitionImage
                         ref={ref}
                         src={src}
+                        onAssetsLoaded={onAssetsLoaded}
 
                         mask={mask}
                         textures={textures}
