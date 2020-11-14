@@ -6,6 +6,7 @@ import ReactGlTransitionImage, {
     noiseSwirlsTransition,
     blurTransition,
     waterTransition,
+    randomSquaresTransition,
 } from 'react-gl-transition-image';
 
 import { useInView } from 'react-intersection-observer';
@@ -46,6 +47,8 @@ const GlFadeInImage = ({ src, textures, mask, transition }) => {
                     <ReactGlTransitionImage
                         ref={ref}
                         src={src}
+
+                        loadAssetsOn={inView}
                         onAssetsLoaded={onAssetsLoaded}
 
                         mask={mask}
@@ -110,6 +113,12 @@ const App = () => {
                     <GlFadeInImage
                         src={cat2Src}
                         transition={noiseSwirlsTransition}
+                    />
+
+                    <h2>Random squares</h2>
+                    <GlFadeInImage
+                        src={cat2Src}
+                        transition={randomSquaresTransition}
                     />
                 </div>
             )}

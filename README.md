@@ -6,7 +6,7 @@
     <img src="https://github.com/stasilo/react-gl-transition-image/raw/master/assets/transition.gif"/>
 </div>
 
-Lazy load & transition your React images with some WebGL glsl niceness 🎉. Easy to use, offers 7 different transitions out the box and gives you the ability to easily port any transition from https://gl-transitions.com/!
+Lazy load & transition your React images with some WebGL glsl niceness 🎉. Easy to use, offers 8 different transitions out the box and gives you the ability to easily port any transition from https://gl-transitions.com/!
 
 ## Install
 
@@ -77,16 +77,18 @@ const GlFadeInImage = ({ src }) => {
 
 ## Props
 
-| Prop           | Description                                                                                                                                                                                                       | Required | Default                 |
-|----------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------|-------------------------|
-| src            | Image url                                                                                                                                                                                                         | yes      |                         |
-| progress       | Normalized progress of the transition, i.e. a value between `0` and `1`                                                                                                                                           | yes      |                         |
-| onAssetsLoaded | Callback fired when all image assets have been preloaded (main image, mask & textures) and the image is ready to be transitioned in.                                                                              | no       |                         |
-| transition     | GLSL source for the transition effect                                                                                                                                                                             | no       | Blobby noise transition |
-| mask           | Mask image url. If this prop is supplied, the image will be used as a mask and the transition will be set (and overridden) accordingly                                                                            | no       |                         |
-| textures       | Array of image urls to be loaded as textures in the transition shader. `textures[0]` will be available as `sampler2D textures[0] in the shader with `vec2 textureResolutions[0]` containing the image resolution. | no       |                         |
-| className      | CSS class name for the outermost wrapper div                                                                                                                                                                      | no       |                         |
-| style          | CSS inline style object for the outermost wrapper div (useful for animating CSS properties concurrently with the GLSL transition (see live demo))                                                                 | no       |                         |
+| Prop           | Description                                                                                                                                                                                                                                                         | Required | Default                 |
+|----------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------|-------------------------|
+| src            | Image url                                                                                                                                                                                                                                                           | yes      |                         |
+| progress       | Normalized progress of the transition, i.e. a value between `0` and `1`.                                                                                                                                                                                            | yes      |                         |
+| transition     | GLSL source for the transition effect.                                                                                                                                                                                                                              | no       | Blobby noise transition |
+| loadAssetsOn   | If supplied, assets will be loaded once this prop equals `true`. If omitted, assets will be preloaded on mount. See the live demo source in `example/` for details.                                                                                                 | no       |                         |
+| onAssetsLoaded | Callback fired when all image assets have been loaded (main image, mask & textures) and the image is ready to be transitioned in. The function is called with the argument `{ width, height }`, i.e. an object containing the width and height of the main image.   | no       |                         |
+| mask           | Mask image url. If this prop is supplied, the image will be used as a mask and the transition will be set (and overridden) accordingly.                                                                                                                             | no       |                         |
+| textures       | Array of image urls to be loaded as textures in the transition shader. `textures[0]` will be available as `sampler2D textures[0] in the shader with `vec2 textureResolutions[0]` containing the image resolution.                                                   | no       |                         |
+| className      | CSS class name for the outermost wrapper div.                                                                                                                                                                                                                       | no       |                         |
+| style          | CSS inline style object for the outermost wrapper div (useful for animating CSS properties concurrently with the GLSL transition (see live demo)).                                                                                                                  | no       |                         |
+
 
 ## Transitions
 The following transitions are currently available:
@@ -97,6 +99,7 @@ The following transitions are currently available:
 - noiseSwirlsTransition
 - blurTransition
 - waterTransition
+- randomSquaresTransition
 
 As mentioned, if the `mask` prop is passed, the mask image will be used to transition in the image, overriding any supplied `transition` effect.
 
