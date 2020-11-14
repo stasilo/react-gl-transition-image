@@ -6,7 +6,7 @@
     <img src="https://github.com/stasilo/react-gl-transition-image/raw/master/assets/transition.gif"/>
 </div>
 
-Lazy load & transition your React images with some WebGL glsl niceness 🎉. Easy to use, offers 7 different transitions out the box and gives you the ability to easily port any transition from https://gl-transitions.com/!
+Lazy load & transition your React images with some WebGL glsl niceness 🎉. Easy to use, offers 8 different transitions out the box and gives you the ability to easily port any transition from https://gl-transitions.com/!
 
 ## Install
 
@@ -99,6 +99,7 @@ The following transitions are currently available:
 - noiseSwirlsTransition
 - blurTransition
 - waterTransition
+- randomSquaresTransition
 
 As mentioned, if the `mask` prop is passed, the mask image will be used to transition in the image, overriding any supplied `transition` effect.
 

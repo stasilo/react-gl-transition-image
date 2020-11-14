@@ -6,6 +6,7 @@ import polkaTransition from './transitions/polka.glsl';
 import noiseSwirlsTransition from './transitions/noiseSwirls.glsl';
 import blurTransition from './transitions/blur.glsl';
 import waterTransition from './transitions/water.glsl';
+import randomSquaresTransition from './transitions/randomSquares.glsl';
 
 export {
     blobbyTransition,
@@ -14,6 +15,7 @@ export {
     noiseSwirlsTransition,
     blurTransition,
     waterTransition,
+    randomSquaresTransition,
 };
 
 export default ReactGlTransitionImage;
