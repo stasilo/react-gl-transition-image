@@ -46,6 +46,8 @@ const GlFadeInImage = ({ src, textures, mask, transition }) => {
                     <ReactGlTransitionImage
                         ref={ref}
                         src={src}
+
+                        loadAssetsOn={inView}
                         onAssetsLoaded={onAssetsLoaded}
 
                         mask={mask}
